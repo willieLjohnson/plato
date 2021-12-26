@@ -1,3 +1,5 @@
+#!/Users/waygen/.pyenv/shims/python
+
 import pygame
 from pygame.locals import *
 import sys
@@ -18,7 +20,7 @@ FRICTION = 0.12
 FPS = 60
 GRAVITY = 0.5
 
-sprites = pygame.sprite.Group()
+entities = pygame.sprite.Group()
 platforms = pygame.sprite.Group()
 
 class Player(pygame.sprite.Sprite):
@@ -70,9 +72,9 @@ class Player(pygame.sprite.Sprite):
 class Platform(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.surface = pygame.Surface((WIDTH, 20))
-        self.surface.fill((255, 0, 0))
-        self.rect = self.surface.get_rect(center = (WIDTH / 2, HEIGHT - 10))
+        self.surface = pygame.Surface((random.randint(50, 100), 12))
+        self.surface.fill((0, 255, 0))
+        self.rect = self.surface.get_rect(center = (random.randint(0, WIDTH - 10), random.randint(0, HEIGHT - 30)))
 
     def move(self):
         pass
@@ -83,13 +85,8 @@ class Platform(pygame.sprite.Sprite):
 def main():
     pygame.init()
     
-    platform = Platform()
     player = Player()
-
-    sprites.add(platform)
-    sprites.add(player)
-    
-    platforms.add(platform)
+    entities.add(player)
 
     clock = pygame.time.Clock()
 
@@ -97,6 +94,8 @@ def main():
     pygame.display.set_caption("GAME")
 
     running = True
+
+    generate_level()
     
     while running:
         for event in pygame.event.get():
@@ -108,16 +107,28 @@ def main():
 
         screen.fill(BLACK)
 
-        for sprite in sprites:
-            screen.blit(sprite.surface, sprite.rect)
-            sprite.move()
-            sprite.update()
+        for entity in entities:
+            screen.blit(entity.surface, entity.rect)
+            entity.move()
+            entity.update()
+
+        if player.rect.top <= HEIGHT / 3:
+            player.position.y += abs(player.velocity.y)
+            for platform in platforms:
+                if platform.rect.top >= HEIGHT:
+                    platform.kill()
 
         pygame.display.flip()
 
         clock.tick(FPS)
 
     pygame.quit()
+
+def generate_level():
+    for _ in range(random.randint(5, 6)):
+        platform = Platform()
+        platforms.add(platform)
+        entities.add(platform)
 
 if __name__ == "__main__":
     main()
