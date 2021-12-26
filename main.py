@@ -25,6 +25,17 @@ class Player(pygame.sprite.Sprite):
         self.position = Vector((10, 385))
         self.velocity = Vector(0, 0)
         self.acceleration = Vector(0, 0)
+    
+    def move(self):
+        self.acceleration = Vector(0, 0)
+
+        keys_pressed = pygame.key.get_pressed()
+
+        if keys_pressed[K_a]:
+            self.acceleration.x = -ACCELERATION
+        if keys_pressed[K_d]:
+            self.acceleration.x = ACCELERATION
+
 class Platform(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
