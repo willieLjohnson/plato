@@ -15,6 +15,9 @@ ACCELERATION = 0.5
 FRICTION = 0.12
 FPS = 60
 
+sprites = pygame.sprite.Group()
+platforms = pygame.sprite.Group()
+
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
@@ -26,8 +29,14 @@ class Player(pygame.sprite.Sprite):
         self.velocity = Vector(0, 0)
         self.acceleration = Vector(0, 0)
     
+    def update(self):
+        hits = pygame.sprite.spritecollide(Player, platforms, False)
+        if hits:
+            self.position.y = hits[0].rect.top + 1
+            self.velocity.y = 0
+    
     def move(self):
-        self.acceleration = Vector(0, 0)
+        self.acceleration = Vector(0, 0.5)
 
         keys_pressed = pygame.key.get_pressed()
 
@@ -61,9 +70,10 @@ def main():
     platform = Platform()
     player = Player()
 
-    sprites = pygame.sprite.Group()
     sprites.add(platform)
     sprites.add(player)
+    
+    platforms.add(platform)
 
     clock = pygame.time.Clock()
 
@@ -88,7 +98,7 @@ def main():
             screen.blit(sprite.surface, sprite.rect)
 
         pygame.display.update()
-        # pygame.display.flip()
+        pygame.display.flip()
 
         clock.tick(FPS)
 
