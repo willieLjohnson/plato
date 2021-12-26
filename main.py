@@ -36,6 +36,17 @@ class Player(pygame.sprite.Sprite):
         if keys_pressed[K_d]:
             self.acceleration.x = ACCELERATION
 
+        self.acceleration.x += self.velocity.x * -FRICTION
+        self.velocity += self.acceleration
+        self.position += self.velocity + 0.5 * self.acceleration
+
+        if self.position.x > WIDTH:
+            self.position.x = 0
+        if self.position.x < 0:
+            self.position.x = WIDTH
+        self.rect.midbottom = self.position
+        
+
 class Platform(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
@@ -68,16 +79,18 @@ def main():
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_x:
                     running = False
-    
+
+        player.move()
+
         screen.fill(BLACK)
 
         for sprite in sprites:
             screen.blit(sprite.surface, sprite.rect)
 
         pygame.display.update()
-        pygame.display.flip()
+        # pygame.display.flip()
 
-        clock.tick(60)
+        clock.tick(FPS)
 
     pygame.quit()
 
