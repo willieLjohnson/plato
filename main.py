@@ -1,6 +1,8 @@
 import pygame
 from pygame.locals import *
 
+Vector = pygame.math.Vector2
+
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 GREEN = (0, 255, 172)
@@ -9,27 +11,30 @@ RED = (255, 0, 172)
 HEIGHT = 460
 WIDTH = 400
 SIZE = (WIDTH, HEIGHT)
-ACC = 0.5
-FRIC = 0.12
+ACCELERATION = 0.5
+FRICTION = 0.12
 FPS = 60
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.surf = pygame.Surface((30, 30))
-        self.surf.fill((128, 255, 40))
-        self.rect = self.surf.get_rect(center = (10, 420))
+        self.surface = pygame.Surface((30, 30))
+        self.surface.fill((128, 255, 40))
+        self.rect = self.surface.get_rect(center = (10, 420))
+
+        self.position = Vector((10, 385))
+        self.velocity = Vector(0, 0)
+        self.acceleration = Vector(0, 0)
 class Platform(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.surf = pygame.Surface((WIDTH, 20))
-        self.surf.fill((255, 0, 0))
-        self.rect = self.surf.get_rect(center = (WIDTH / 2, HEIGHT - 10))
+        self.surface = pygame.Surface((WIDTH, 20))
+        self.surface.fill((255, 0, 0))
+        self.rect = self.surface.get_rect(center = (WIDTH / 2, HEIGHT - 10))
 
 
 def main():
     pygame.init()
-    vec = pygame.math.Vector2
     
     platform = Platform()
     player = Player()
@@ -56,7 +61,7 @@ def main():
         screen.fill(BLACK)
 
         for sprite in sprites:
-            screen.blit(sprite.surf, sprite.rect)
+            screen.blit(sprite.surface, sprite.rect)
 
         pygame.display.update()
         pygame.display.flip()
