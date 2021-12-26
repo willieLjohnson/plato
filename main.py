@@ -30,8 +30,8 @@ class Player(pygame.sprite.Sprite):
         self.acceleration = Vector(0, 0)
     
     def update(self):
-        hits = pygame.sprite.spritecollide(Player, platforms, False)
-        if hits:
+        hits = pygame.sprite.spritecollide(self, platforms, False)
+        if hits and self.velocity.y > 0:
             self.position.y = hits[0].rect.top + 1
             self.velocity.y = 0
     
@@ -44,6 +44,9 @@ class Player(pygame.sprite.Sprite):
             self.acceleration.x = -ACCELERATION
         if keys_pressed[K_d]:
             self.acceleration.x = ACCELERATION
+        if keys_pressed[K_SPACE]:
+            self.jump()
+
 
         self.acceleration.x += self.velocity.x * -FRICTION
         self.velocity += self.acceleration
@@ -54,6 +57,9 @@ class Player(pygame.sprite.Sprite):
         if self.position.x < 0:
             self.position.x = WIDTH
         self.rect.midbottom = self.position
+    
+    def jump(self):
+        self.velocity.y = -15
         
 
 class Platform(pygame.sprite.Sprite):
@@ -89,8 +95,9 @@ def main():
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_x:
                     running = False
-
+        
         player.move()
+        player.update()
 
         screen.fill(BLACK)
 
